@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono-Rians | Parvis de l'Église</title>
+    <title>Chrono-Rians | Vision Temporelle Avancée</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #020617; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
         
         header { text-align: center; margin-bottom: 10px; }
-        header span { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #f59e0b; font-weight: 600; }
+        header span { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #38bdf8; font-weight: 600; }
         header h1 { font-size: 20px; font-weight: bold; color: #ffffff; margin-top: 4px; }
         header p { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
         main { max-width: 400px; width: 100%; margin: auto; display: flex; flex-direction: column; gap: 20px; }
         
-        .card { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
+        .card { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 20px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         
-        .badge { background: rgba(245, 158, 11, 0.2); color: #f59e0b; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+        .badge { background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 500; border: 1px solid rgba(56, 189, 248, 0.3); }
         .status-red { font-size: 11px; color: #f87171; font-weight: 500; }
         .status-green { font-size: 11px; color: #34d399; font-weight: bold; animation: pulse 2s infinite; }
         
@@ -29,34 +29,43 @@
 
         .gauge-box { background: rgba(15, 23, 42, 0.9); border: 1px solid #1e293b; border-radius: 12px; padding: 12px; margin-top: 15px; }
         .gauge-info { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 8px; }
-        .gauge-val { color: #f59e0b; font-weight: bold; }
+        .gauge-val { color: #38bdf8; font-weight: bold; }
         .progress-bg { width: 100%; background: #1e293b; height: 8px; border-radius: 4px; overflow: hidden; }
-        .progress-bar { background: #f59e0b; height: 100%; width: 0%; transition: width 0.3s ease; }
+        .progress-bar { background: #38bdf8; height: 100%; width: 0%; transition: width 0.3s ease; }
 
         .btn-disabled { width: 100%; margin-top: 15px; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; background: #1e293b; color: #64748b; border: none; cursor: not-allowed; }
-        .btn-active { width: 100%; margin-top: 15px; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; background: #f59e0b; color: #020617; border: none; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.3); }
+        .btn-active { width: 100%; margin-top: 15px; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; background: #38bdf8; color: #020617; border: none; cursor: pointer; box-shadow: 0 10px 20px -3px rgba(56, 189, 248, 0.4); }
 
         .demo-link { text-align: center; }
         .demo-link button { background: none; border: none; color: #94a3b8; font-size: 12px; text-decoration: underline; cursor: pointer; }
-        .demo-link button:hover { color: #f59e0b; }
+        .demo-link button:hover { color: #38bdf8; }
 
-        /* Modal Caméra / Vision Temporelle */
-        #vision-modal { position: fixed; inset: 0; background: #000; z-index: 50; display: none; flex-direction: column; justify-content: space-between; padding: 20px; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; }
-        .modal-title { color: #f59e0b; font-weight: bold; font-size: 12px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-        .modal-close { background: #1e293b; color: #fff; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        /* HUD Vision Temporelle Hyper-Immersif */
+        #vision-modal { position: fixed; inset: 0; background: #000; z-index: 50; display: none; flex-direction: column; justify-content: space-between; padding: 15px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; background: rgba(2, 6, 23, 0.8); padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .modal-title { color: #38bdf8; font-weight: bold; font-size: 11px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; font-family: monospace; }
+        .modal-close { background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
         
-        .cam-container { position: relative; flex: 1; margin: 15px 0; border-radius: 16px; overflow: hidden; border: 1px solid rgba(245, 158, 11, 0.4); background: #0f172a; }
-        video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: sepia(0.3) contrast(1.25); }
+        .cam-container { position: relative; flex: 1; margin: 10px 0; border-radius: 16px; overflow: hidden; border: 2px solid rgba(56, 189, 248, 0.5); background: #0f172a; }
+        video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: hue-rotate(180deg) contrast(1.3) brightness(0.9); }
         
-        .overlay-box { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; pointer-events: none; }
-        .clue-card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); padding: 20px; border-radius: 16px; border: 1px solid rgba(245, 158, 11, 0.6); text-align: center; pointer-events: auto; max-width: 280px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
-        .clue-card span { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #f59e0b; font-family: monospace; }
-        .clue-card p { font-size: 13px; font-weight: bold; color: #fff; margin: 8px 0; line-height: 1.4; }
+        /* Effet de balayage radar & réticule */
+        .hud-overlay { position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
+        .crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border: 1px dashed rgba(56, 189, 248, 0.6); border-radius: 50%; animation: spin 10s linear infinite; }
+        .crosshair-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 6px; height: 6px; background: #38bdf8; border-radius: 50%; box-shadow: 0 0 10px #38bdf8; }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        .radar-scan { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #38bdf8; box-shadow: 0 0 15px #38bdf8; animation: scan 3s ease-in-out infinite alternate; }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+
+        /* Carte d'indice interactive type Terminal */
+        .terminal-box { background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(12px); padding: 18px; border-radius: 14px; border: 1px solid rgba(56, 189, 248, 0.6); text-align: center; pointer-events: auto; max-width: 300px; width: 100%; margin: auto; box-shadow: 0 15px 30px rgba(0,0,0,0.9); }
+        .terminal-box span { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #38bdf8; font-family: monospace; }
+        .terminal-box p { font-size: 12px; font-weight: bold; color: #fff; margin: 8px 0; line-height: 1.4; }
         
-        .clue-input { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; text-align: center; color: #fff; font-size: 14px; margin-bottom: 10px; outline: none; }
-        .clue-input:focus { border-color: #f59e0b; }
-        .clue-btn { width: 100%; padding: 10px; background: #f59e0b; color: #020617; font-weight: bold; font-size: 11px; text-transform: uppercase; border: none; border-radius: 8px; cursor: pointer; }
+        .terminal-input { width: 100%; background: #020617; border: 1px solid #334155; border-radius: 8px; padding: 10px; text-align: center; color: #38bdf8; font-family: monospace; font-size: 14px; margin-bottom: 10px; outline: none; letter-spacing: 2px; }
+        .terminal-input:focus { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
+        .terminal-btn { width: 100%; padding: 10px; background: #38bdf8; color: #020617; font-weight: bold; font-size: 11px; text-transform: uppercase; border: none; border-radius: 8px; cursor: pointer; letter-spacing: 1px; }
 
         footer { text-align: center; font-size: 10px; color: #475569; }
     </style>
@@ -64,26 +73,26 @@
 <body>
 
     <header>
-        <span>Test Phygital • Rians</span>
-        <h1>LE PARVIS SACRÉ</h1>
-        <p>N 47° 11,137' E 2° 36,777'</p>
+        <span>Module Phygital Pro • Rians</span>
+        <h1>PARVIS DE L'ÉGLISE</h1>
+        <p>Sécurisation du flux temporel</p>
     </header>
 
     <main>
         <div class="card">
             <div class="card-header">
-                <span class="badge">Point Clé #3</span>
+                <span class="badge">Secteur Alpha #3</span>
                 <span id="gps-status" class="status-red">● Hors zone</span>
             </div>
 
             <div>
-                <div class="title">Le Secret des Pierres Anciennes</div>
-                <div class="desc">Approchez-vous du parvis ou utilisez le mode simulation ci-dessous pour activer la lentille temporelle.</div>
+                <div class="title">Analyse du Monolithe</div>
+                <div class="desc">Rapprochez-vous de l'église ou simulez l'entrée dans la zone pour activer le terminal de réalité augmentée.</div>
             </div>
 
             <div class="gauge-box">
                 <div class="gauge-info">
-                    <span>Distance de l'église :</span>
+                    <span>Proximité balise :</span>
                     <span id="distance-val" class="gauge-val">-- mètres</span>
                 </div>
                 <div class="progress-bg">
@@ -92,45 +101,59 @@
             </div>
 
             <button id="cam-trigger" disabled class="btn-disabled" onclick="openTemporalVision()">
-                Verrouillé (Éloigné)
+                Terminal Verrouillé
             </button>
         </div>
 
         <div class="demo-link">
             <button onclick="forceUnlockForDemo()">
-                ⚡ [Mode Démo Bureau] Forcer l'activation de la caméra
+                ⚡ [Mode Démo Bureau] Activer le flux immédiatement
             </button>
         </div>
     </main>
 
-    <!-- Modal Vision Temporelle -->
+    <!-- Modal Vision Temporelle HUD -->
     <div id="vision-modal">
         <div class="modal-header">
             <div class="modal-title">
-                <div style="width:8px; height:8px; background:#ef4444; border-radius:50%;"></div>
-                <span>VISION TEMPORELLE : 1880</span>
+                <div style="width:8px; height:8px; background:#38bdf8; border-radius:50%; box-shadow: 0 0 8px #38bdf8;" class="animate-ping"></div>
+                <span>HUD TACTIQUE // 1880.4</span>
             </div>
-            <button class="modal-close" onclick="closeTemporalVision()">Quitter</button>
+            <button class="modal-close" onclick="closeTemporalVision()">QUITTER</button>
         </div>
 
         <div class="cam-container">
             <video id="camera-stream" autoplay playsinline></video>
             
-            <div class="overlay-box">
-                <div class="clue-card">
-                    <span>Indice Historique Révélé</span>
-                    <p>"Regarde le linteau de la porte principale : quel chiffre est gravé sous la croix ?"</p>
-                    <input type="text" id="riddle-input" placeholder="Votre réponse..." class="clue-input">
-                    <button class="clue-btn" onclick="submitAnswer()">Valider le Secret</button>
+            <!-- Éléments HUD Visuels "Wahou" -->
+            <div class="radar-scan"></div>
+            <div class="crosshair"></div>
+            <div class="crosshair-center"></div>
+
+            <div class="hud-overlay">
+                <div style="font-family: monospace; font-size: 9px; color: rgba(56, 189, 248, 0.7); text-shadow: 0 0 5px #000;">
+                    LAT: 47.11137 // LON: 2.36777<br>STATUT: SIGNAL CRYPTÉ DÉTECTÉ
+                </div>
+
+                <!-- Interface de Résolution au centre -->
+                <div class="terminal-box">
+                    <span>ANALYSE ARCHITECTURALE</span>
+                    <p>"Quel chiffre historique est gravé sur le linteau de pierre au-dessus du portail ?"</p>
+                    <input type="text" id="riddle-input" placeholder="CODE..." class="terminal-input">
+                    <button class="terminal-btn" onclick="submitAnswer()">DÉCRYPTER</button>
+                </div>
+
+                <div style="font-family: monospace; font-size: 9px; color: rgba(56, 189, 248, 0.7); text-align: right; text-shadow: 0 0 5px #000;">
+                    SYS_CORE: ONLINE<br>STABILITÉ: 98.4%
                 </div>
             </div>
         </div>
 
-        <footer>Pointez la caméra vers l'édifice pour déchiffrer l'énigme.</footer>
+        <footer>Pointez l'objectif vers le bâtiment pour décoder l'anomalie.</footer>
     </div>
 
     <footer>
-        Module Phygital • Parvis de l'Église (Rians)
+        Conception Phygital • Expérience Mairie & Collectivités
     </footer>
 
     <script>
@@ -138,6 +161,38 @@
         const churchLon = 2.612950;
         const radiusMeters = 15;
         let isUnlocked = false;
+
+        // Générateur de sons synthétisés (Web Audio API) pour effet "Sci-Fi / Pro" sans fichiers externes
+        function playSciFiSound(type) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'unlock') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.2);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // Do
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // Mi
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // Sol
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.4);
+                }
+            } catch (e) {
+                // Ignore si le navigateur bloque l'audio sans interaction préalable
+            }
+        }
 
         if ("geolocation" in navigator) {
             navigator.geolocation.watchPosition(pos => {
@@ -171,19 +226,21 @@
 
         function forceUnlockForDemo() {
             updateDistanceUI(2);
-            if ("vibrate" in navigator) navigator.vibrate(300);
+            playSciFiSound('unlock');
+            if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
         }
 
         function unlockStep() {
             isUnlocked = true;
             const statusEl = document.getElementById('gps-status');
-            statusEl.innerText = "● Sur le parvis !";
+            statusEl.innerText = "● Signal capté !";
             statusEl.className = "status-green";
             
             const btn = document.getElementById('cam-trigger');
             btn.disabled = false;
             btn.className = "btn-active";
-            btn.innerText = "Lancer la Vision Temporelle";
+            btn.innerText = "Activer le HUD Temporel";
+            playSciFiSound('unlock');
         }
 
         async function openTemporalVision() {
@@ -192,7 +249,7 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 document.getElementById('camera-stream').srcObject = stream;
             } catch (e) {
-                alert("Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.");
+                alert("Accès caméra requis pour la surimpression HUD.");
             }
         }
 
@@ -207,10 +264,12 @@
         function submitAnswer() {
             const val = document.getElementById('riddle-input').value.trim();
             if(val.length > 0) {
-                alert("Brillant ! L'énigme du parvis est validée. Les élus vont adorer l'immersion.");
+                playSciFiSound('success');
+                if ("vibrate" in navigator) navigator.vibrate(200);
+                alert("SYSTÈME MIS À JOUR : Code accepté. Les élus vont être scotchés par l'immersion !");
                 closeTemporalVision();
             } else {
-                alert("Veuillez entrer une réponse pour valider l'énigme.");
+                alert("Veuillez entrer le code d'accès.");
             }
         }
     </script>

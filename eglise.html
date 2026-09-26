@@ -3,115 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono-Rians | Test Parvis de l'Église</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Chrono-Rians | Parvis de l'Église</title>
     <style>
-        .glass {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(1000%); }
-        }
-        .scanline {
-            animation: scanline 4s linear infinite;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #020617; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
+        
+        header { text-align: center; margin-bottom: 10px; }
+        header span { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #f59e0b; font-weight: 600; }
+        header h1 { font-size: 20px; font-weight: bold; color: #ffffff; margin-top: 4px; }
+        header p { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+        main { max-width: 400px; width: 100%; margin: auto; display: flex; flex-direction: column; gap: 20px; }
+        
+        .card { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        
+        .badge { background: rgba(245, 158, 11, 0.2); color: #f59e0b; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+        .status-red { font-size: 11px; color: #f87171; font-weight: 500; }
+        .status-green { font-size: 11px; color: #34d399; font-weight: bold; animation: pulse 2s infinite; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .title { font-size: 16px; font-weight: bold; color: #ffffff; }
+        .desc { font-size: 12px; color: #cbd5e1; margin-top: 5px; line-height: 1.4; }
+
+        .gauge-box { background: rgba(15, 23, 42, 0.9); border: 1px solid #1e293b; border-radius: 12px; padding: 12px; margin-top: 15px; }
+        .gauge-info { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 8px; }
+        .gauge-val { color: #f59e0b; font-weight: bold; }
+        .progress-bg { width: 100%; background: #1e293b; height: 8px; border-radius: 4px; overflow: hidden; }
+        .progress-bar { background: #f59e0b; height: 100%; width: 0%; transition: width 0.3s ease; }
+
+        .btn-disabled { width: 100%; margin-top: 15px; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; background: #1e293b; color: #64748b; border: none; cursor: not-allowed; }
+        .btn-active { width: 100%; margin-top: 15px; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; background: #f59e0b; color: #020617; border: none; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.3); }
+
+        .demo-link { text-align: center; }
+        .demo-link button { background: none; border: none; color: #94a3b8; font-size: 12px; text-decoration: underline; cursor: pointer; }
+        .demo-link button:hover { color: #f59e0b; }
+
+        /* Modal Caméra / Vision Temporelle */
+        #vision-modal { position: fixed; inset: 0; background: #000; z-index: 50; display: none; flex-direction: column; justify-content: space-between; padding: 20px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { color: #f59e0b; font-weight: bold; font-size: 12px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+        .modal-close { background: #1e293b; color: #fff; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        
+        .cam-container { position: relative; flex: 1; margin: 15px 0; border-radius: 16px; overflow: hidden; border: 1px solid rgba(245, 158, 11, 0.4); background: #0f172a; }
+        video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: sepia(0.3) contrast(1.25); }
+        
+        .overlay-box { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; pointer-events: none; }
+        .clue-card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); padding: 20px; border-radius: 16px; border: 1px solid rgba(245, 158, 11, 0.6); text-align: center; pointer-events: auto; max-width: 280px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
+        .clue-card span { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #f59e0b; font-family: monospace; }
+        .clue-card p { font-size: 13px; font-weight: bold; color: #fff; margin: 8px 0; line-height: 1.4; }
+        
+        .clue-input { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; text-align: center; color: #fff; font-size: 14px; margin-bottom: 10px; outline: none; }
+        .clue-input:focus { border-color: #f59e0b; }
+        .clue-btn { width: 100%; padding: 10px; background: #f59e0b; color: #020617; font-weight: bold; font-size: 11px; text-transform: uppercase; border: none; border-radius: 8px; cursor: pointer; }
+
+        footer { text-align: center; font-size: 10px; color: #475569; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between p-5 font-sans">
+<body>
 
-    <!-- En-tête -->
-    <header class="text-center space-y-1">
-        <span class="text-xs uppercase tracking-widest text-amber-500 font-semibold">Test Phygital - Église de Rians</span>
-        <h1 class="text-2xl font-bold tracking-wider text-white">LE PARVIS SACRÉ</h1>
-        <p class="text-xs text-slate-400">Coordonnées cibles : N 47° 11,137' E 2° 36,777'</p>
+    <header>
+        <span>Test Phygital • Rians</span>
+        <h1>LE PARVIS SACRÉ</h1>
+        <p>N 47° 11,137' E 2° 36,777'</p>
     </header>
 
-    <!-- Écran Principal de l'Étape -->
-    <main class="my-auto space-y-6 max-w-md mx-auto w-full">
-        <div class="glass rounded-2xl p-6 shadow-2xl space-y-4">
-            <div class="flex justify-between items-center">
-                <span class="bg-amber-500/20 text-amber-400 text-xs px-3 py-1 rounded-full font-medium">Point Clé #3</span>
-                <span id="gps-status" class="text-xs text-red-400 font-medium">● Hors zone</span>
+    <main>
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">Point Clé #3</span>
+                <span id="gps-status" class="status-red">● Hors zone</span>
             </div>
 
             <div>
-                <h2 class="text-lg font-bold text-white">Le Secret des Pierres Anciennes</h2>
-                <p class="text-xs text-slate-300 mt-1">Approchez-vous du parvis ou utilisez le mode simulation pour activer la lentille temporelle.</p>
+                <div class="title">Le Secret des Pierres Anciennes</div>
+                <div class="desc">Approchez-vous du parvis ou utilisez le mode simulation ci-dessous pour activer la lentille temporelle.</div>
             </div>
 
-            <!-- Jauge de proximité -->
-            <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-800 space-y-2">
-                <div class="flex justify-between text-xs text-slate-400">
+            <div class="gauge-box">
+                <div class="gauge-info">
                     <span>Distance de l'église :</span>
-                    <span id="distance-val" class="text-amber-400 font-bold">-- mètres</span>
+                    <span id="distance-val" class="gauge-val">-- mètres</span>
                 </div>
-                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div id="bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+                <div class="progress-bg">
+                    <div id="bar" class="progress-bar"></div>
                 </div>
             </div>
 
-            <!-- Bouton Caméra (Actif ou Verrouillé) -->
-            <button id="cam-trigger" disabled onclick="openTemporalVision()" class="w-full py-4 rounded-xl font-bold text-sm tracking-wider uppercase transition-all bg-slate-800 text-slate-500 cursor-not-allowed">
+            <button id="cam-trigger" disabled class="btn-disabled" onclick="openTemporalVision()">
                 Verrouillé (Éloigné)
             </button>
         </div>
 
-        <!-- Bouton de test rapide pour le créateur -->
-        <div class="text-center">
-            <button onclick="forceUnlockForDemo()" class="text-xs text-slate-400 underline hover:text-amber-400 transition-colors">
+        <div class="demo-link">
+            <button onclick="forceUnlockForDemo()">
                 ⚡ [Mode Démo Bureau] Forcer l'activation de la caméra
             </button>
         </div>
     </main>
 
-    <!-- Modal de la Caméra / Vision Temporelle -->
-    <div id="vision-modal" class="fixed inset-0 bg-black z-50 hidden flex flex-col justify-between p-6">
-        <div class="flex justify-between items-center z-10">
-            <div class="flex items-center gap-2">
-                <div class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></div>
-                <span class="text-amber-400 font-bold text-xs tracking-widest">VISION TEMPORELLE : 1880</span>
+    <!-- Modal Vision Temporelle -->
+    <div id="vision-modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <div style="width:8px; height:8px; background:#ef4444; border-radius:50%;"></div>
+                <span>VISION TEMPORELLE : 1880</span>
             </div>
-            <button onclick="closeTemporalVision()" class="text-white text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg">Quitter</button>
+            <button class="modal-close" onclick="closeTemporalVision()">Quitter</button>
         </div>
 
-        <!-- Flux Vidéo et Calque Graphique -->
-        <div class="relative flex-1 my-4 rounded-2xl overflow-hidden border border-amber-500/40 bg-slate-900 shadow-2xl">
-            <video id="camera-stream" autoplay playsinline class="absolute inset-0 w-full h-full object-cover filter sepia-[0.3] contrast-125"></video>
+        <div class="cam-container">
+            <video id="camera-stream" autoplay playsinline></video>
             
-            <!-- Ligne de balayage style rétro -->
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/10 to-transparent scanline pointer-events-none h-10"></div>
-
-            <!-- Indice interactif incrusté sur la vidéo -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none">
-                <div class="bg-black/70 backdrop-blur-md p-5 rounded-2xl border border-amber-500/60 shadow-2xl pointer-events-auto max-w-xs space-y-2">
-                    <span class="text-[10px] uppercase tracking-widest text-amber-400 font-mono">Indice Révélé par la Caméra</span>
-                    <p class="text-sm font-bold text-white">"Regarde le linteau de la porte principale : quel chiffre est gravé sous la croix ?"</p>
-                    <input type="text" id="riddle-input" placeholder="Votre réponse..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-center text-sm text-white focus:outline-none focus:border-amber-500">
-                    <button onclick="submitAnswer()" class="w-full py-2 bg-amber-500 text-slate-950 font-bold text-xs uppercase rounded-lg tracking-wider">Valider le Secret</button>
+            <div class="overlay-box">
+                <div class="clue-card">
+                    <span>Indice Historique Révélé</span>
+                    <p>"Regarde le linteau de la porte principale : quel chiffre est gravé sous la croix ?"</p>
+                    <input type="text" id="riddle-input" placeholder="Votre réponse..." class="clue-input">
+                    <button class="clue-btn" onclick="submitAnswer()">Valider le Secret</button>
                 </div>
             </div>
         </div>
 
-        <p class="text-center text-[10px] text-slate-500">Pointez la caméra vers l'édifice pour déchiffrer l'énigme patrimoniale.</p>
+        <footer>Pointez la caméra vers l'édifice pour déchiffrer l'énigme.</footer>
     </div>
 
-    <footer class="text-center text-[10px] text-slate-600">
+    <footer>
         Module Phygital • Parvis de l'Église (Rians)
     </footer>
 
     <script>
-        // Coordonnées exactes du Parvis de l'Église : N 47° 11,137' E 2° 36,777[span_1](start_span)'[span_1](end_span)
-        // Conversion décimale : Lat 47.185617, Lon 2.612950
         const churchLat = 47.185617;
         const churchLon = 2.612950;
-        const radiusMeters = 15; // Tolérance de 15 mètres
-
+        const radiusMeters = 15;
         let isUnlocked = false;
 
-        // Suivi GPS réel
         if ("geolocation" in navigator) {
             navigator.geolocation.watchPosition(pos => {
                 const dist = getDistanceFromLatLonInM(pos.coords.latitude, pos.coords.longitude, churchLat, churchLon);
@@ -149,17 +176,18 @@
 
         function unlockStep() {
             isUnlocked = true;
-            document.getElementById('gps-status').innerText = "● Sur le parvis !";
-            document.getElementById('gps-status').className = "text-xs text-emerald-400 font-bold animate-pulse";
+            const statusEl = document.getElementById('gps-status');
+            statusEl.innerText = "● Sur le parvis !";
+            statusEl.className = "status-green";
             
             const btn = document.getElementById('cam-trigger');
             btn.disabled = false;
-            btn.className = "w-full py-4 rounded-xl font-bold text-sm tracking-wider uppercase transition-all bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 hover:bg-amber-400 cursor-pointer";
+            btn.className = "btn-active";
             btn.innerText = "Lancer la Vision Temporelle";
         }
 
         async function openTemporalVision() {
-            document.getElementById('vision-modal').classList.remove('hidden');
+            document.getElementById('vision-modal').style.display = "flex";
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 document.getElementById('camera-stream').srcObject = stream;
@@ -169,7 +197,7 @@
         }
 
         function closeTemporalVision() {
-            document.getElementById('vision-modal').classList.add('hidden');
+            document.getElementById('vision-modal').style.display = "none";
             const video = document.getElementById('camera-stream');
             if (video.srcObject) {
                 video.srcObject.getTracks().forEach(t => t.stop());

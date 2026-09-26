@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrono-Rians | Test Parvis de l'Église</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(1000%); }
+        }
+        .scanline {
+            animation: scanline 4s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between p-5 font-sans">
+
+    <!-- En-tête -->
+    <header class="text-center space-y-1">
+        <span class="text-xs uppercase tracking-widest text-amber-500 font-semibold">Test Phygital - Église de Rians</span>
+        <h1 class="text-2xl font-bold tracking-wider text-white">LE PARVIS SACRÉ</h1>
+        <p class="text-xs text-slate-400">Coordonnées cibles : N 47° 11,137' E 2° 36,777'</p>
+    </header>
+
+    <!-- Écran Principal de l'Étape -->
+    <main class="my-auto space-y-6 max-w-md mx-auto w-full">
+        <div class="glass rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <span class="bg-amber-500/20 text-amber-400 text-xs px-3 py-1 rounded-full font-medium">Point Clé #3</span>
+                <span id="gps-status" class="text-xs text-red-400 font-medium">● Hors zone</span>
+            </div>
+
+            <div>
+                <h2 class="text-lg font-bold text-white">Le Secret des Pierres Anciennes</h2>
+                <p class="text-xs text-slate-300 mt-1">Approchez-vous du parvis ou utilisez le mode simulation pour activer la lentille temporelle.</p>
+            </div>
+
+            <!-- Jauge de proximité -->
+            <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-800 space-y-2">
+                <div class="flex justify-between text-xs text-slate-400">
+                    <span>Distance de l'église :</span>
+                    <span id="distance-val" class="text-amber-400 font-bold">-- mètres</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Bouton Caméra (Actif ou Verrouillé) -->
+            <button id="cam-trigger" disabled onclick="openTemporalVision()" class="w-full py-4 rounded-xl font-bold text-sm tracking-wider uppercase transition-all bg-slate-800 text-slate-500 cursor-not-allowed">
+                Verrouillé (Éloigné)
+            </button>
+        </div>
+
+        <!-- Bouton de test rapide pour le créateur -->
+        <div class="text-center">
+            <button onclick="forceUnlockForDemo()" class="text-xs text-slate-400 underline hover:text-amber-400 transition-colors">
+                ⚡ [Mode Démo Bureau] Forcer l'activation de la caméra
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal de la Caméra / Vision Temporelle -->
+    <div id="vision-modal" class="fixed inset-0 bg-black z-50 hidden flex flex-col justify-between p-6">
+        <div class="flex justify-between items-center z-10">
+            <div class="flex items-center gap-2">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></div>
+                <span class="text-amber-400 font-bold text-xs tracking-widest">VISION TEMPORELLE : 1880</span>
+            </div>
+            <button onclick="closeTemporalVision()" class="text-white text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg">Quitter</button>
+        </div>
+
+        <!-- Flux Vidéo et Calque Graphique -->
+        <div class="relative flex-1 my-4 rounded-2xl overflow-hidden border border-amber-500/40 bg-slate-900 shadow-2xl">
+            <video id="camera-stream" autoplay playsinline class="absolute inset-0 w-full h-full object-cover filter sepia-[0.3] contrast-125"></video>
+            
+            <!-- Ligne de balayage style rétro -->
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/10 to-transparent scanline pointer-events-none h-10"></div>
+
+            <!-- Indice interactif incrusté sur la vidéo -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none">
+                <div class="bg-black/70 backdrop-blur-md p-5 rounded-2xl border border-amber-500/60 shadow-2xl pointer-events-auto max-w-xs space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-amber-400 font-mono">Indice Révélé par la Caméra</span>
+                    <p class="text-sm font-bold text-white">"Regarde le linteau de la porte principale : quel chiffre est gravé sous la croix ?"</p>
+                    <input type="text" id="riddle-input" placeholder="Votre réponse..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-center text-sm text-white focus:outline-none focus:border-amber-500">
+                    <button onclick="submitAnswer()" class="w-full py-2 bg-amber-500 text-slate-950 font-bold text-xs uppercase rounded-lg tracking-wider">Valider le Secret</button>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-center text-[10px] text-slate-500">Pointez la caméra vers l'édifice pour déchiffrer l'énigme patrimoniale.</p>
+    </div>
+
+    <footer class="text-center text-[10px] text-slate-600">
+        Module Phygital • Parvis de l'Église (Rians)
+    </footer>
+
+    <script>
+        // Coordonnées exactes du Parvis de l'Église : N 47° 11,137' E 2° 36,777[span_1](start_span)'[span_1](end_span)
+        // Conversion décimale : Lat 47.185617, Lon 2.612950
+        const churchLat = 47.185617;
+        const churchLon = 2.612950;
+        const radiusMeters = 15; // Tolérance de 15 mètres
+
+        let isUnlocked = false;
+
+        // Suivi GPS réel
+        if ("geolocation" in navigator) {
+            navigator.geolocation.watchPosition(pos => {
+                const dist = getDistanceFromLatLonInM(pos.coords.latitude, pos.coords.longitude, churchLat, churchLon);
+                updateDistanceUI(dist);
+            }, err => {
+                console.log("GPS restreint, utilisez le mode démo.");
+            }, { enableHighAccuracy: true });
+        }
+
+        function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
+            const R = 6371e3;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        }
+
+        function updateDistanceUI(meters) {
+            if (isUnlocked) return;
+            document.getElementById('distance-val').innerText = Math.round(meters) + " m";
+            let progress = Math.max(0, 100 - (meters / 2));
+            document.getElementById('bar').style.width = progress + "%";
+
+            if (meters <= radiusMeters) {
+                unlockStep();
+            }
+        }
+
+        function forceUnlockForDemo() {
+            updateDistanceUI(2);
+            if ("vibrate" in navigator) navigator.vibrate(300);
+        }
+
+        function unlockStep() {
+            isUnlocked = true;
+            document.getElementById('gps-status').innerText = "● Sur le parvis !";
+            document.getElementById('gps-status').className = "text-xs text-emerald-400 font-bold animate-pulse";
+            
+            const btn = document.getElementById('cam-trigger');
+            btn.disabled = false;
+            btn.className = "w-full py-4 rounded-xl font-bold text-sm tracking-wider uppercase transition-all bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 hover:bg-amber-400 cursor-pointer";
+            btn.innerText = "Lancer la Vision Temporelle";
+        }
+
+        async function openTemporalVision() {
+            document.getElementById('vision-modal').classList.remove('hidden');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('camera-stream').srcObject = stream;
+            } catch (e) {
+                alert("Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.");
+            }
+        }
+
+        function closeTemporalVision() {
+            document.getElementById('vision-modal').classList.add('hidden');
+            const video = document.getElementById('camera-stream');
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(t => t.stop());
+            }
+        }
+
+        function submitAnswer() {
+            const val = document.getElementById('riddle-input').value.trim();
+            if(val.length > 0) {
+                alert("Brillant ! L'énigme du parvis est validée. Les élus vont adorer l'immersion.");
+                closeTemporalVision();
+            } else {
+                alert("Veuillez entrer une réponse pour valider l'énigme.");
+            }
+        }
+    </script>
+</body>
+</html>
